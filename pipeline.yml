@@ -17,7 +17,6 @@ resources:
     # access_key_id: ((s3-access-key-id))
     # secret_access_key: ((s3-secret-key))
     bucket: ((platform-automation-bucket))
-    region: ((s3-region))
     regexp: installation-(.*).zip
 - name: env
   type: git
