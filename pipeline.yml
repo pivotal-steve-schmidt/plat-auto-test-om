@@ -48,6 +48,8 @@ jobs:
     - task: export-installation
       image: platform-automation-image
       file: platform-automation-tasks/tasks/export-installation.yml
+      input_mapping:
+        env: interpolated-env
     - put: installation
       params:
         file: installation/installation-*.zip
