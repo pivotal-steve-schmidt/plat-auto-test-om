@@ -1,4 +1,5 @@
-platform-automation-bucket: https://s3-eu-central-1.amazonaws.com/plat-auto-bucket-sschmidt/
+platform-automation-bucket: plat-auto-bucket-sschmidt
+s3-region: eu-central-1
 credhub-server: https://192.168.50.6:8844
 opsman-url: https://pcf.cayenne.cf-app.com
 pipeline-repo: https://github.com/pivotal-steve-schmidt/plat-auto-test-om
