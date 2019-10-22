@@ -33,6 +33,18 @@ jobs:
         globs: ["*tasks*.zip"]
         unpack: true
     - get: env
+    - task: credhub-interpolate
+      image: platform-automation-image
+      file: platform-automation-tasks/tasks/credhub-interpolate.yml
+      params:
+        CREDHUB_CLIENT: ((credhub-client))
+        CREDHUB_SECRET: ((credhub-secret))
+        CREDHUB_SERVER: ((credhub-server))
+        PREFIX: /concourse/bucc/cayenne
+      input_mapping:
+        files: env
+      output_mapping:
+        interpolated-files: interpolated-env
     - task: export-installation
       image: platform-automation-image
       file: platform-automation-tasks/tasks/export-installation.yml
