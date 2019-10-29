@@ -6,24 +6,21 @@ resource_types:
     repository: pivotalcf/pivnet-resource
     tag: latest-final
 resources:
+- name: env
+  type: git
+  source:
+    uri: ((pipeline-repo))
+    branch: master
+- name: installation
+  type: s3
+  source:
+    bucket: ((platform-automation-bucket))
+    regexp: installation-(.*).zip
 - name: platform-automation
   type: pivnet
   source:
     product_slug: platform-automation
     api_token: ((pivnet-refresh-token))
-- name: installation
-  type: s3
-  source:
-    # access_key_id: ((s3-access-key-id))
-    # secret_access_key: ((s3-secret-key))
-    bucket: ((platform-automation-bucket))
-    regexp: installation-(.*).zip
-- name: env
-  type: git
-  source:
-    uri: ((pipeline-repo))
-    # private_key: ((plat-auto-pipes-deploy-key.private_key))
-    branch: master
 jobs:
 - name: export-installation
   serial: true
@@ -45,8 +42,9 @@ jobs:
       params:
         CREDHUB_CLIENT: ((credhub-client))
         CREDHUB_SECRET: ((credhub-secret))
-        CREDHUB_SERVER: ((credhub-server))
-        PREFIX: /concourse/bucc/cayenne
+        CREDHUB_CA_CERT: ((credhub_ca_cert))
+        CREDHUB_SERVER: https://192.168.50.6:8844
+        PREFIX: /concourse/main/cayenne
       input_mapping:
         files: env
       output_mapping:
@@ -54,8 +52,12 @@ jobs:
     - task: export-installation
       image: platform-automation-image
       file: platform-automation-tasks/tasks/export-installation.yml
-      input_mapping:
-        env: interpolated-env
+      params:
+        OM_TARGET: ((opsman-url))
+        OM_USERNAME: ((opsman-username))
+        OM_PASSWORD: ((opsman-password))
+        OM_SKIP_SSL_VALIDATION: true
+        # OM_CA_CERT: ((om_ca_cert))
     - put: installation
       params:
         file: installation/installation-*.zip
